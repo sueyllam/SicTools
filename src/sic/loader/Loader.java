@@ -31,6 +31,11 @@ public class Loader {
         skipWhitespace(r);
         return Integer.parseInt(readString(r, 6), 16);
     }
+	
+	public static void readEoln(Reader r) throws IOException {
+		if (r.read() == '\r')
+			r.read();
+	}
 
     public static void loadRawCode(Machine machine, int address, byte[] code) {
         System.arraycopy(code, 0, machine.memory.memory, address, code.length);
@@ -44,7 +49,8 @@ public class Loader {
             readString(r, 6);	// name is ignored
             int start = readWord(r);
             int length = readWord(r);
-            r.read();  // EOL
+            //r.read();  // EOL
+			readEoln(r);
 
             Memory mem = machine.memory;
             // text records
@@ -57,7 +63,8 @@ public class Loader {
                     byte val = (byte)readByte(r);
                     mem.setByte(loc++, val);
                 }
-                r.read();  // EOL
+                //r.read();  // EOL
+				readEoln(r);
                 ch = r.read();
             }
 
@@ -65,7 +72,8 @@ public class Loader {
             while (ch == 'M') {
                 readWord(r);	// addr
                 readByte(r);	// len
-                r.read();  // EOL
+                //r.read();  // EOL
+				readEoln(r);
                 ch = r.read();
             }
 
